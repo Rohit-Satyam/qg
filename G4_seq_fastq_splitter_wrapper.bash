@@ -1,0 +1,8 @@
+#bsub -o split1.log -q smp -J split1 python G4_seq_fastq_splitter.py /home/parashar/archive/g4_seq_raw_data/Na_K_1/SRR1693705.fastq 1000000 ../data/g4_seq/reanalysis/raw_data/Na_K_1/SRR1693705
+#bsub -o split2.log -q smp -J split2 python G4_seq_fastq_splitter.py /home/parashar/archive/g4_seq_raw_data/Na_K_1/SRR1693706.fastq 1000000 ../data/g4_seq/reanalysis/raw_data/Na_K_1/SRR1693706
+bsub -o split3.log -q smp -J split3 python G4_seq_fastq_splitter.py /home/parashar/archive/g4_seq_raw_data/Na_K_2/SRR1693707.fastq 1000000 ../data/g4_seq/reanalysis/raw_data/Na_K_2/SRR1693707
+bsub -o split4.log -q smp -J split4 python G4_seq_fastq_splitter.py /home/parashar/archive/g4_seq_raw_data/Na_K_2/SRR1693708.fastq 1000000 ../data/g4_seq/reanalysis/raw_data/Na_K_2/SRR1693708
+bsub -o split5.log -q smp -J split5 python G4_seq_fastq_splitter.py /home/parashar/archive/g4_seq_raw_data/Na_PDS_1/SRR1693709.fastq 1000000 ../data/g4_seq/reanalysis/raw_data/Na_PDS_1/SRR1693709
+bsub -o split6.log -q smp -J split6 python G4_seq_fastq_splitter.py /home/parashar/archive/g4_seq_raw_data/Na_PDS_1/SRR1693710.fastq 1000000 ../data/g4_seq/reanalysis/raw_data/Na_PDS_1/SRR1693710
+#bsub -o split8.log -q smp -J split7 python G4_seq_fastq_splitter.py ../data/g4_seq/reanalysis/raw_data/Na_PDS_2/SRR1693711.fastq 1000000 ../data/g4_seq/reanalysis/raw_data/Na_PDS_2/SRR1693711
+#bsub -o split7.log -q smp -J split8 python G4_seq_fastq_splitter.py ../data/g4_seq/reanalysis/raw_data/Na_PDS_2/SRR1693712.fastq 1000000 ../data/g4_seq/reanalysis/raw_data/Na_PDS_2/SRR1693712
