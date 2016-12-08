@@ -97,55 +97,6 @@ class QuadMotifFinder():
         return res
 
 
-# def bed_to_name_dict(bedfile):
-#     res = {}
-#     with open(bedfile) as h:
-#         for l in h:
-#             c = l.rstrip('\n').split('\t')
-#             res[c[3]] = c
-#     return res
-
-# offset = 24
-
-# if __name__ == "__main__":
-#     switch_point_bed = sys.argv[1]
-#     oq_read_start_bed = sys.argv[2]
-#     out_file = sys.argv[3]
-#     loop_start = int(sys.argv[4])
-#     loop_stop = int(sys.argv[5])
-#     bulge = int(sys.argv[6])
-
-#     read_bed_dict = bed_to_name_dict(oq_read_start_bed)
-#     distances = []
-
-#     for bedline in tqdm(pbt.BedTool(switch_point_bed).sort()):
-#         c = str(bedline).rstrip('\n').split('\t')
-#         if c[0] == 'chrM':
-#             continue
-#         read_name = c[3]
-#         i = read_bed_dict[c[3]]
-#         i[2] = str(int(i[2]) + 150)
-#         bed = pbt.BedTool("\t".join(i), from_string=True)
-#         fasta_file = '%s/%s.fa' % (chrom_loc, i[0])
-#         bed = bed.sequence(fi=fasta_file, s=True)
-#         seq = [x.rstrip('\n').upper() for x in
-#                open(bed.seqfn).readlines()[1:]][0]
-#         seq = seq[offset:]
-#         q = QuadMotifFinder(seq, loop_start=loop_start,
-#                             loop_stop=loop_stop, bulge=bulge).resNov
-#         q = [x.split('\t') for x in q]
-#         # substract 24 because first 14 bases cropped and 10 ignored
-#         # as a filter where switchpoint was not allowed in first and
-#         # last 10 bases
-#         if len(q) > 0:
-#             if i[5] == "+":
-#                 d = (int(c[1]) - int(i[1])) - offset
-#             else:
-#                 d = ((int(i[1]) + 150) - int(c[1])) - offset
-#             q = q[0]
-#             distances.append(int(q[1]) - d)
-#     np.save(out_file, np.array(distances))
-
 if __name__ == "__main__":
     switch_point_bed = sys.argv[1]
     out_file = sys.argv[2]
@@ -156,7 +107,7 @@ if __name__ == "__main__":
     chrom_info = '/home/parashar/scratch/hg19_resource/hg19.genome'
     chrom_loc = '/home/parashar/scratch/hg19_resource/chromosomes'
     distances = []
-
+    sequences = []
     for bedline in tqdm(pbt.BedTool(switch_point_bed).sort()):
         c = str(bedline).rstrip('\n').split('\t')
         if c[0] == 'chrM':
@@ -172,4 +123,7 @@ if __name__ == "__main__":
         if len(q) > 0:
             q = [x.split('\t') for x in q][0]
             distances.append(int(q[1]))
+            sequences.append(seq)
     np.save(out_file, np.array(distances))
+    with open("%s.seq" % out_file, 'w') as OUT:
+        OUT.write("\n".join(sequences))

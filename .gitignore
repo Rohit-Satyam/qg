@@ -1,2 +1,4 @@
-./archive/*
-./logs/*
+archive
+logs
+archive/*
+logs/*
