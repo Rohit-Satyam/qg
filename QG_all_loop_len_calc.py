@@ -17,12 +17,15 @@ if __name__ == "__main__":
     data = {}
     for k in keys:
         data[k] = {x: 0 for x in range(1, 51)}
-
+    bulge_data = {0: 0, 1: 0, 2: 0, 3: 0}
     fns = glob("%s/*.graphml" % in_dir)
     for fn in tqdm(fns):
         G = read_graphml(fn)
         for i in G.edges_iter(data=True):
             k = "%d_%d" % (i[0].count('-'), i[1].count('-'))
             data[k][i[2]['length'] - 1] += 1
+        for i in G.nodes():
+            bulge_data[i.count('-')] += 1
+
     with open(out_file, 'w') as OUT:
-        json.dump(data, OUT, indent=2)
+        json.dump([data, bulge_data], OUT, indent=2)
