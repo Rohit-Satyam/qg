@@ -84,14 +84,12 @@ if __name__ == "__main__":
     start_pos = int(in_file.split('/')[-1].split('.json')[0])
     data = json.load(open(in_file))
 
-    exp_scores = np.zeros(int(1e6 + 100))
-    delta_scores = np.zeros(int(1e6 + 100))
+    exp_scores = []
+    delta_scores = []
 
     for graph_pos in tqdm(data):
-
         quads, scores, alts = data[graph_pos]
         max_pos = get_max_pos(quads, alts)
-
         bscores = {x: [[], [], []] for x in range(0, max_pos + 1)}
         for quad, score, alt in zip(quads, scores, alts):
             for i in range(4):
@@ -108,22 +106,15 @@ if __name__ == "__main__":
                             alt_score = calc_quad_score(alt_quad)
                             alt_bases = get_bases_from_stem(alt_quad[i])
                             delta_bases = set(stem_bases).difference(alt_bases)
-                            beta_bases = set(alt_bases).difference(stem_bases)
                             for db in delta_bases:
                                 bscores[db][1].append(alt_score)
-                            for bb in beta_bases:
-                                bscores[bb][2].append(alt_score)
 
-        pos = int(graph_pos) - start_pos
+        pos = int(graph_pos)
         for i in range(len(bscores)):
             if len(bscores[i][0]) > 0:
-                exp_scores[pos + i] = np.mean(bscores[i][0])
+                exp_scores.append((pos + i, max(bscores[i][0])))
             if len(bscores[i][1]) > 0:
-                a = sum(bscores[i][1])
-                if len(bscores[i][2]) > 0:
-                    delta_scores[pos + i] = a / sum(bscores[i][2])
-                else:
-                    delta_scores[pos + i] = a
+                delta_scores.append((pos + i, max(bscores[i][1])))
 
-    np.save("%s_exp_score" % out_file_prefix, exp_scores)
-    np.save("%s_delta_score" % out_file_prefix, delta_scores)
+    np.save("%s_exp_score" % out_file_prefix, np.array(exp_scores))
+    np.save("%s_delta_score" % out_file_prefix, np.array(delta_scores))

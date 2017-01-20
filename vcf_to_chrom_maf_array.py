@@ -4,6 +4,7 @@ import sys
 
 
 def make_array(chrom):
+    # hg19 coordinates
     chromInfo = {
         '1': 249250621, '2': 243199373, '3': 198022430,
         '4': 191154276, '5': 180915260, '6': 171115067,
@@ -16,6 +17,7 @@ def make_array(chrom):
     }
     return np.zeros(chromInfo[chrom])
 
+
 def process_line(c):
     pos = int(c[1]) - 1
     if len(c[3]) == 1 and len(c[4]) == 1:
@@ -27,14 +29,16 @@ def process_line(c):
                 return (pos, caf)
     return False
 
+
 def get_skip_lines_num(vcf_file):
     n = 0
     with open(vcf_file) as h:
         for l in h:
             if l[0] == '#':
-                n+=1
+                n += 1
             else:
                 return n
+
 
 def line_gen(vcf, chrom, skip):
     n = 0
@@ -50,10 +54,11 @@ def line_gen(vcf, chrom, skip):
 
 
 if  __name__ == '__main__':
-    vcf_file = '/home/parashar/scratch/quadcomb/data/dbsnp/downloaded_vcf/All_20160601.vcf'
-    out_dir = '/home/parashar/scratch/quadcomb/data/dbsnp/chrom_arrays'
+    base_dir = '/home/parashar/scratch/quadcomb/data/dbsnp'
+    vcf_file = "%s/downloaded_vcf/All_20160601.vcf" % base_dir
+    out_dir = '%s/chrom_arrays' % base_dir
     chrom = sys.argv[1]
-    
+
     chrom_array = make_array(chrom)
     skip_lines = get_skip_lines_num(vcf_file)
 
