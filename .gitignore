@@ -2,3 +2,4 @@ archive
 logs
 archive/*
 logs/*
+.ipynb_checkpoints/*
