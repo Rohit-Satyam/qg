@@ -1,6 +1,5 @@
 import numpy as np
 import networkx as nx
-from tqdm import tqdm
 from collections import deque
 
 # This code has been tested for Python 3.6 only.
@@ -27,7 +26,7 @@ class StemGroups(object):
 
         self.stems = []
         self.stemLen = 3  # QuadGraph supports stem length of 3 only.
-        self.sequence = sequence
+        self.sequence = sequence.upper()
         self.base = base
         self.maxBulgeLen = max_bulge_len
         self.maxLoopLen = max_loop_len
@@ -50,7 +49,7 @@ class StemGroups(object):
                 within the stem is indicated.
         """
 
-        for i in tqdm(range(len(self.sequence) - self.kmerSize + 1)):
+        for i in range(len(self.sequence) - self.kmerSize + 1):
             self.pos = i
             self.kmer = self.sequence[i: i + self.kmerSize]
             self.k_stems = self._get_stems_in_kmer(self.kmer, self.pos)
@@ -148,15 +147,12 @@ class QuadPaths(object):
         self.QPS = np.array(self._make_quad_paths())
         self._remove_non_quad_nodes()
         if self.QPS.shape[0] > 0:
-            self.info = {
-                'num_nodes': len(self.G.nodes()),
-                'num_edges': len(self.G.edges()),
-                'num_quadpaths': self.QPS.shape[0],
-                'graph_start': self.QPS[0][0][0],
-                'graph_end' : self.QPS[-1][-1][-1]
-            }
+            self.info = [
+                len(self.G.nodes()), len(self.G.edges()),
+                self.QPS.shape[0], self.QPS[0][0][0], self.QPS[-1][-1][-1]
+            ]
         else:
-            self.info = {}
+            self.info = []
 
     def _populate_graph(self):
         """
@@ -225,7 +221,7 @@ class QuadPaths(object):
                         n4_a = self.nodeCodes[n4]
                         for i in [n1, n2, n3, n4]:
                             self.nodeInQuad[i] = True
-                        quadpaths.append([n1_a, n2_a, n3_a, n4_a])
+                        quadpaths.append((n1_a, n2_a, n3_a, n4_a))
         return quadpaths
 
     def _remove_non_quad_nodes(self):
@@ -240,36 +236,3 @@ class QuadPaths(object):
         for node in del_nodes:
             self.G.remove_node(node)
         return True
-    
-
-class SniprqScorer(object):
-    """
-        Scoring class of a set of quadpaths from a DAG.
-        Input parameters:
-            quadpaths: type(np.array)
-            loop_decay_rate: Decay rate for loops (type: dict)
-            bulge_decay_rate: Decay rate for bulges (type: dict)
-    """
-    def __init__(self, quadpaths, loop_probs, bulge_probs):
-        self.loopProbs = loop_probs
-        self.bulgeProbs = bulge_probs
-        self.scores = []
-        for qp in quadpaths:
-            self.scores.append(self._score_paths(qp))
-        
-    def _score_paths(self, qp):
-        loop_lens = qp[:, 0][1:] - qp[: , 2][:-1] - 1
-        try:
-            loop_scores = self.loopProbs[loop_lens - 1] * 1000
-        except:
-            print (qp)
-            return 0
-        bulge_lens = [x[2] - x[0] - 2 for x in qp]
-        bulge_scores = []
-        for i in range(3):
-            bulge_scores.append((
-                self.bulgeProbs[bulge_lens[i]] +
-                self.bulgeProbs[bulge_lens[i + 1]]
-            )/2)
-        scores = bulge_scores*loop_scores
-        return int(3/np.sum(1/scores)) + 1

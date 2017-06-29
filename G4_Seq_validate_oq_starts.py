@@ -45,7 +45,7 @@ def get_validated_start(bed_file, switchpoint_file,
                                 if b.strand == "+":
                                     start = b.start + adjust_factor
                                 else:
-                                    start = b.start + cycles - adjust_factor
+                                    start = b.start + cycles - adjust_factor - 1 # -1 added later
                                 out_bed.append("\t".join(map(str, [
                                     b.chrom, start, start + 1,
                                     b.name, 0, b.strand

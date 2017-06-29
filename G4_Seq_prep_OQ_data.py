@@ -32,7 +32,7 @@ def lazy_fastq_parser(f):
             seq = next(h).rstrip('\n')
             next(h)
             qual = next(h).rstrip('\n')
-            # only from 15th to till 100th cycle
+            # only from 15th to till 99th cycle
             yield (name, seq[14:99], qual[14:99])
 
 
