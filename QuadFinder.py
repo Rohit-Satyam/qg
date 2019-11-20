@@ -23,6 +23,9 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
+##.................................................................................................................##
+
+## Defined Class
 
 class QuadMotifFinder():
     """
@@ -35,6 +38,8 @@ class QuadMotifFinder():
     def __init__(self, fasta_file, savename=None, stem=3, loop_start=1,
                  loop_stop=7, greedy=True, bulge=0, is_seq=False,
                  strands=['+', '-'], verbose=True):
+        """__init__() is to initialize the variables defined below within this class (defaults to zero). self represents the instance of the class. By using the "self" keyword we can access the attributes and methods of the class in python.
+        Self is a convention and not a real python keyword itself is parameter in function and user can use another parameter name in place of it."""
         self.fastaFile = fasta_file
         self.saveName = savename
         self.stemSize = stem
